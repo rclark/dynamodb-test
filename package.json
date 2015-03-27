@@ -1,0 +1,48 @@
+{
+  "name": "dynamodb-test",
+  "version": "0.0.1",
+  "description": "Create and destroy DynamoDB and Dynalite tables for use in tape tests",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "jshint index.js test && jscs index.js test",
+    "test": "tape test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rclark/dynamodb-test.git"
+  },
+  "keywords": [
+    "AWS",
+    "testing",
+    "DynamoDB",
+    "dynalite",
+    "tape"
+  ],
+  "author": "Ryan Clark",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rclark/dynamodb-test/issues"
+  },
+  "homepage": "https://github.com/rclark/dynamodb-test",
+  "dependencies": {
+    "aws-sdk": "^2.1.20",
+    "dynalite": "^0.11.0",
+    "dyno": "^0.11.1",
+    "underscore": "^1.8.2"
+  },
+  "jscsConfig": {
+    "preset": "airbnb"
+  },
+  "jshint": {
+    "node": true,
+    "globalstrict": false,
+    "undef": true,
+    "unused": true,
+    "noarg": true
+  },
+  "devDependencies": {
+    "jscs": "^1.12.0",
+    "jshint": "^2.6.3",
+    "tape": "^3.5.0"
+  }
+}
