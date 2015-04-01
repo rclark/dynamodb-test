@@ -9,14 +9,9 @@ var dynalite = require('dynalite')({
   deleteTableMs: 0
 });
 
-module.exports = function(projectName, tableDef, region, port) {
-  if (typeof region === 'number') {
-    port = region;
-    region = null;
-  }
+var listening = false;
 
-  port = port || 4567;
-
+module.exports = function(projectName, tableDef, region) {
   var live = !!region;
   tableDef = _(tableDef).clone();
 
@@ -34,7 +29,7 @@ module.exports = function(projectName, tableDef, region, port) {
     region: 'fake',
     accessKeyId: 'fake',
     secretAccessKey: 'fake',
-    endpoint: 'http://localhost:' + port
+    endpoint: 'http://localhost:4567'
   };
 
   dynamodb.dynamo = new AWS.DynamoDB(options);
@@ -53,9 +48,11 @@ module.exports = function(projectName, tableDef, region, port) {
     }
 
     if (live) return dynamodb.dyno.createTable(tableDef, done);
+    if (listening) return dynamodb.dyno.createTable(tableDef, done);
 
-    dynalite.listen(port, function(err) {
+    dynalite.listen(4567, function(err) {
       if (err) throw err;
+      listening = true;
       dynamodb.dyno.createTable(tableDef, done);
     });
   }
@@ -145,6 +142,7 @@ module.exports = function(projectName, tableDef, region, port) {
     test('[dynamodb-test] close dynalite', function(assert) {
       dynalite.close(function(err) {
         if (err) throw err;
+        listening = false;
         assert.end();
       });
     });

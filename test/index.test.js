@@ -64,6 +64,18 @@ test('mocked empty', function(assert) {
   });
 });
 
+var secondMock = require('..')(project, tableDef);
+secondMock.start();
+
+test('mock two tables', function(assert) {
+  mocked.dynamo.listTables({}, function(err, data) {
+    if (err) throw err;
+    assert.deepEqual(data.TableNames, [mocked.tableName, secondMock.tableName], 'creates two tables');
+    assert.end();
+  });
+});
+
+secondMock.delete();
 mocked.delete();
 
 test('mocked delete', function(assert) {
