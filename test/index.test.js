@@ -5,8 +5,8 @@ var _ = require('underscore');
 var project = crypto.randomBytes(4).toString('hex');
 var tableDef = require('./table.json');
 
-var mocked = require('..')(project, tableDef);
-var live = require('..')(project, tableDef, 'us-east-1');
+var mocked = require('..')(test, project, tableDef);
+var live = require('..')(test, project, tableDef, 'us-east-1');
 
 test('sets tableName', function(assert) {
   var re = new RegExp('test-' + project + '-[a-zA-Z0-9]{8}');
@@ -64,7 +64,7 @@ test('mocked empty', function(assert) {
   });
 });
 
-var secondMock = require('..')(project, tableDef);
+var secondMock = require('..')(test, project, tableDef);
 secondMock.start();
 
 test('mock two tables', function(assert) {

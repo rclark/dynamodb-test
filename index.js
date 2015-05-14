@@ -1,4 +1,3 @@
-var test = require('tape');
 var crypto = require('crypto');
 var AWS = require('aws-sdk');
 var _ = require('underscore');
@@ -11,7 +10,7 @@ var dynalite = require('dynalite')({
 
 var listening = false;
 
-module.exports = function(projectName, tableDef, region) {
+module.exports = function(test, projectName, tableDef, region) {
   var live = !!region;
   tableDef = _(tableDef).clone();
 

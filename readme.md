@@ -5,8 +5,9 @@ Create and destroy DynamoDB and Dynalite tables for use in [tape](https://github
 ## Simple example
 
 ```js
+var tape = require('tape');
 var tableDef = require('./table-definition.json');
-var dynamodb = require('dynamodb-test')('my-tests', tableDef, 'us-east-1');
+var dynamodb = require('dynamodb-test')(tape, 'my-tests', tableDef, 'us-east-1');
 
 dynamodb.test('my test', function(assert) {
   // starts your table, then runs your assertions, then purges your table
@@ -20,9 +21,9 @@ dynamodb.delete();
 
 ## API
 
-**var dynamodb = require('dynamodb-test')(projectName, tableDef, [region], [port])**
+**var dynamodb = require('dynamodb-test')(tape, projectName, tableDef, [region], [port])**
 
-Configure the `dynamodb` object by providing an arbitrary name for your project and the JSON object that defines the table's schema. Optionally, you may specify a region. If you do, tests will be run against a live DynamoDB table in that region. If you don't, tests will be run against a local instance of [dynalite](https://github.com/mhart/dynalite). If you specify a port, dynalite will listen on it, otherwise it will use 4567.
+Configure the `dynamodb` object by providing your own `tape` object, an arbitrary name for your project, and the JSON object that defines the table's schema. Optionally, you may specify a region. If you do, tests will be run against a live DynamoDB table in that region. If you don't, tests will be run against a local instance of [dynalite](https://github.com/mhart/dynalite). If you specify a port, dynalite will listen on it, otherwise it will use 4567.
 
 **dynamodb.dynamo**
 
