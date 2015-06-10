@@ -24,7 +24,7 @@ module.exports = function(test, projectName, tableDef, region) {
 
   dynamodb.tableDef = tableDef;
 
-  var options = live ? { region: region } : {
+  var options = dynamodb.config = live ? { region: region } : {
     region: 'fake',
     accessKeyId: 'fake',
     secretAccessKey: 'fake',
@@ -139,10 +139,13 @@ module.exports = function(test, projectName, tableDef, region) {
 
   if (!live) dynamodb.close = function() {
     test('[dynamodb-test] close dynalite', function(assert) {
-      dynalite.close(function(err) {
+      dynamodb.dyno.deleteTable(dynamodb.tableName, function(err) {
         if (err) throw err;
-        listening = false;
-        assert.end();
+        dynalite.close(function(err) {
+          if (err) throw err;
+          listening = false;
+          assert.end();
+        });
       });
     });
   };
