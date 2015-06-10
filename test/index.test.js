@@ -70,7 +70,9 @@ secondMock.start();
 test('mock two tables', function(assert) {
   mocked.dynamo.listTables({}, function(err, data) {
     if (err) throw err;
-    assert.deepEqual(data.TableNames, [mocked.tableName, secondMock.tableName], 'creates two tables');
+    assert.equal(data.TableNames.length, 2, 'creates two tables');
+    assert.ok(data.TableNames.indexOf(mocked.tableName) > -1, 'created first mock table');
+    assert.ok(data.TableNames.indexOf(secondMock.tableName) > -1, 'created second mock table');
     assert.end();
   });
 });
