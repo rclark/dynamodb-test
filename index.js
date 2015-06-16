@@ -14,6 +14,17 @@ module.exports = function(test, projectName, tableDef, region) {
   var live = !!region;
   tableDef = _(tableDef).clone();
 
+  function getKeys(item) {
+    var keyNames = tableDef.KeySchema.map(function(key) {
+      return key.AttributeName;
+    });
+
+    return keyNames.reduce(function(key, name) {
+      key[name] = item[name];
+      return key;
+    }, {});
+  }
+
   var dynamodb = {};
 
   dynamodb.tableName = tableDef.TableName = [
@@ -103,7 +114,7 @@ module.exports = function(test, projectName, tableDef, region) {
           assert.timeoutAfter(300000);
           return dynamodb.dyno.scan(function(err, items) {
             if (err) throw err;
-            dynamodb.dyno.deleteItems(items, function(err) {
+            dynamodb.dyno.deleteItems(items.map(getKeys), function(err) {
               if (err) throw err;
               assert.end();
             });
