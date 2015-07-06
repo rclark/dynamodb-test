@@ -165,6 +165,24 @@ test('live empty', function(assert) {
   });
 });
 
+live.load(_.range(1000).map(function(i) {
+  return {
+    id: crypto.randomBytes(16).toString('hex'),
+    range: i,
+    data: crypto.randomBytes(1200)
+  };
+}));
+
+live.empty();
+
+test('live empty multiple pages', function(assert) {
+  live.dyno.scan(function(err, items) {
+    if (err) throw err;
+    assert.deepEqual(items, [], 'emptied database');
+    assert.end();
+  });
+});
+
 live.delete();
 
 test('live delete', function(assert) {

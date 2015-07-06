@@ -27,7 +27,7 @@ Configure the `dynamodb` object by providing your own `tape` object, an arbitrar
 
 **dynamodb.dynamo**
 
-An instance of [AWS.DynamoDB]() configured to query your test endpoint (live or dynalite).
+An instance of [AWS.DynamoDB](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html) configured to query your test endpoint (live or dynalite).
 
 **dynamodb.dyno**
 

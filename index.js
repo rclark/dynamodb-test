@@ -112,7 +112,7 @@ module.exports = function(test, projectName, tableDef, region) {
       function empty() {
         if (live) {
           assert.timeoutAfter(300000);
-          return dynamodb.dyno.scan(function(err, items) {
+          return dynamodb.dyno.scan({ pages: 0 }, function(err, items) {
             if (err) throw err;
             dynamodb.dyno.deleteItems(items.map(getKeys), function(err) {
               if (err) throw err;
