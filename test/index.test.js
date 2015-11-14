@@ -49,7 +49,7 @@ mocked.load([{id: 'hey', range: 1}]);
 test('mocked fixture load', function(assert) {
   mocked.dyno.scan(function(err, items) {
     if (err) throw err;
-    assert.deepEqual(items, [{id: 'hey', range: 1}], 'loaded fixtures');
+    assert.deepEqual(items, { Count: 1, Items: [ { id: 'hey', range: 1 } ], ScannedCount: 1 }, 'loaded fixtures');
     assert.end();
   });
 });
@@ -59,7 +59,7 @@ mocked.empty();
 test('mocked empty', function(assert) {
   mocked.dyno.scan(function(err, items) {
     if (err) throw err;
-    assert.deepEqual(items, [], 'emptied database');
+    assert.deepEqual(items, { Count: 0, Items: [], ScannedCount: 0 }, 'emptied database');
     assert.end();
   });
 });
@@ -100,7 +100,7 @@ mocked.test('mocked test', function(assert) {
 test('mocked test cleanup', function(assert) {
   mocked.dyno.scan(function(err, items) {
     if (err) throw err;
-    assert.deepEqual(items, [], 'emptied database');
+    assert.deepEqual(items, { Count: 0, Items: [], ScannedCount: 0 }, 'emptied database');
     assert.end();
   });
 });
@@ -112,7 +112,7 @@ mocked.test('mocked test with fixtures', [{id: 'hey', range: 1}], function(asser
     assert.deepEqual(data.TableNames, [mocked.tableName], 'creates the table');
     mocked.dyno.scan(function(err, items) {
       if (err) throw err;
-      assert.deepEqual(items, [{id: 'hey', range: 1}], 'loaded fixtures');
+      assert.deepEqual(items, { Count: 1, Items: [ { id: 'hey', range: 1 } ], ScannedCount: 1 }, 'loaded fixtures');
       assert.end();
     });
   });
@@ -121,7 +121,7 @@ mocked.test('mocked test with fixtures', [{id: 'hey', range: 1}], function(asser
 test('mocked test with fixtures cleanup', function(assert) {
   mocked.dyno.scan(function(err, items) {
     if (err) throw err;
-    assert.deepEqual(items, [], 'emptied database');
+    assert.deepEqual(items, { Count: 0, Items: [], ScannedCount: 0 }, 'emptied database');
     assert.end();
   });
 });
@@ -150,7 +150,7 @@ live.load([{id: 'hey', range: 1}]);
 test('live fixture load', function(assert) {
   live.dyno.scan(function(err, items) {
     if (err) throw err;
-    assert.deepEqual(items, [{id: 'hey', range: 1}], 'loaded fixtures');
+    assert.deepEqual(items, { Count: 1, Items: [ { id: 'hey', range: 1 } ], ScannedCount: 1 }, 'loaded fixtures');
     assert.end();
   });
 });
@@ -160,12 +160,12 @@ live.empty();
 test('live empty', function(assert) {
   live.dyno.scan(function(err, items) {
     if (err) throw err;
-    assert.deepEqual(items, [], 'emptied database');
+    assert.deepEqual(items, { Count: 0, Items: [], ScannedCount: 0 }, 'emptied database');
     assert.end();
   });
 });
 
-live.load(_.range(1000).map(function(i) {
+live.load(_.range(998).map(function(i) {
   return {
     id: crypto.randomBytes(16).toString('hex'),
     range: i,
@@ -176,9 +176,9 @@ live.load(_.range(1000).map(function(i) {
 live.empty();
 
 test('live empty multiple pages', function(assert) {
-  live.dyno.scan(function(err, items) {
+  live.dyno.scan({ ConsistentRead: true }, function(err, items) {
     if (err) throw err;
-    assert.deepEqual(items, [], 'emptied database');
+    assert.deepEqual(items, { Count: 0, Items: [], ScannedCount: 0 }, 'emptied database');
     assert.end();
   });
 });
@@ -205,7 +205,7 @@ live.test('live test', function(assert) {
 test('live test cleanup', function(assert) {
   live.dyno.scan(function(err, items) {
     if (err) throw err;
-    assert.deepEqual(items, [], 'emptied database');
+    assert.deepEqual(items, { Count: 0, Items: [], ScannedCount: 0 }, 'emptied database');
     assert.end();
   });
 });

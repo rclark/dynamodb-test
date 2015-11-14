@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var AWS = require('aws-sdk');
 var _ = require('underscore');
+var stream = require('stream');
 var Dyno = require('dyno');
 var dynalite = require('dynalite')({
   createTableMs: 0,
@@ -80,7 +81,9 @@ module.exports = function(test, projectName, tableDef, region) {
       if (live) assert.timeoutAfter(300000);
       if (!tableRunning) return assert.end();
 
-      dynamodb.dyno.deleteTable(dynamodb.tableName, function(err) {
+      dynamodb.dyno.deleteTable({
+        TableName: dynamodb.tableName
+      }, function(err) {
         if (err) throw err;
         tableRunning = false;
         assert.end();
@@ -96,10 +99,27 @@ module.exports = function(test, projectName, tableDef, region) {
       function load() {
         if (live) assert.timeoutAfter(300000);
 
-        dynamodb.dyno.putItems(fixtures, function(err) {
-          if (err) throw err;
-          assert.end();
+        var params = { RequestItems: {} };
+        params.RequestItems[dynamodb.tableName] = fixtures.map(function(item) {
+          return { PutRequest: { Item: item } };
         });
+
+        var requestSet = dynamodb.dyno.batchWriteItemRequests(params);
+
+        var attempts = 0;
+        (function write(requestSet) {
+          requestSet.sendAll(10, function(err, responses, unprocessed) {
+            if (err) throw err;
+            attempts++;
+
+            if (unprocessed && attempts > 5)
+              throw new Error('Failed to load some fixtures (unprocessed by DynamoDB after 5 attempts)');
+            else if (unprocessed)
+              return setTimeout(write, Math.pow(2, attempts), unprocessed);
+
+            assert.end();
+          });
+        })(requestSet);
       }
     });
   };
@@ -112,13 +132,50 @@ module.exports = function(test, projectName, tableDef, region) {
       function empty() {
         if (live) {
           assert.timeoutAfter(300000);
-          return dynamodb.dyno.scan({ pages: 0 }, function(err, items) {
-            if (err) throw err;
-            dynamodb.dyno.deleteItems(items.map(getKeys), function(err) {
-              if (err) throw err;
+
+          var deletes = new stream.Writable({ objectMode: true });
+          deletes.pending = false;
+          var keys = [];
+          keys.send = function(callback) {
+            var params = { RequestItems: {} };
+            params.RequestItems[dynamodb.tableName] = keys.splice(0, 25).map(function(key) {
+              return { DeleteRequest: { Key: key } };
+            });
+
+            (function destroy(params) {
+              deletes.pending = true;
+              dynamodb.dyno.batchWriteItem(params, function(err, data) {
+                deletes.pending = false;
+                if (err) throw err;
+
+                if (data.UnprocessedItems && Object.keys(data.UnprocessedItems).length)
+                  return destroy({RequestItems: data.UnprocessedItems });
+
+                callback();
+              });
+            })(params);
+          };
+
+          deletes._write = function(item, enc, callback) {
+            keys.push(getKeys(item));
+            if (keys.length < 25) return callback();
+            keys.send(callback);
+          };
+
+          var end = deletes.end.bind(deletes);
+          deletes.end = function() {
+            if (deletes.pending) return setImmediate(deletes.end);
+            if (!keys.length) return end();
+            keys.send(end);
+          };
+
+          dynamodb.dyno.scanStream({ ConsistentRead: true })
+            .pipe(deletes)
+            .on('finish', function() {
               assert.end();
             });
-          });
+
+          return;
         }
 
         dynamodb.dyno.deleteTable(dynamodb.tableName, function(err) {

@@ -4,7 +4,7 @@
   "description": "Create and destroy DynamoDB and Dynalite tables for use in tape tests",
   "main": "index.js",
   "scripts": {
-    "pretest": "jshint index.js test && jscs index.js test",
+    "pretest": "eslint index.js test",
     "test": "tape test/*.test.js"
   },
   "repository": {
@@ -27,22 +27,11 @@
   "dependencies": {
     "aws-sdk": "^2.1.20",
     "dynalite": "^0.14.0",
-    "dyno": "^0.15.1",
+    "dyno": "^1.0.0",
     "underscore": "^1.8.2"
   },
-  "jscsConfig": {
-    "preset": "airbnb"
-  },
-  "jshint": {
-    "node": true,
-    "globalstrict": false,
-    "undef": true,
-    "unused": true,
-    "noarg": true
-  },
   "devDependencies": {
-    "jscs": "^1.12.0",
-    "jshint": "^2.6.3",
+    "eslint": "^1.9.0",
     "tape": "^4.0.0"
   }
 }
