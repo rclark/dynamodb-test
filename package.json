@@ -25,13 +25,13 @@
   },
   "homepage": "https://github.com/rclark/dynamodb-test",
   "dependencies": {
-    "aws-sdk": "^2.1.20",
-    "dynalite": "^0.14.0",
-    "dyno": "^1.0.0",
-    "underscore": "^1.8.2"
+    "aws-sdk": "^2.3.14",
+    "dynalite": "^1.0.2",
+    "dyno": "^1.0.1",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "eslint": "^1.9.0",
-    "tape": "^4.0.0"
+    "eslint": "^2.10.2",
+    "tape": "^4.5.1"
   }
 }
