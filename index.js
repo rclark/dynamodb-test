@@ -112,9 +112,7 @@ module.exports = function(test, projectName, tableDef, region) {
             if (err) throw err;
             attempts++;
 
-            if (unprocessed && attempts > 5)
-              throw new Error('Failed to load some fixtures (unprocessed by DynamoDB after 5 attempts)');
-            else if (unprocessed)
+            if (unprocessed && unprocessed.length)
               return setTimeout(write, Math.pow(2, attempts), unprocessed);
 
             assert.end();
