@@ -1,6 +1,6 @@
 {
   "name": "dynamodb-test",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Create and destroy DynamoDB and Dynalite tables for use in tape tests",
   "main": "index.js",
   "scripts": {
