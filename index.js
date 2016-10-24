@@ -13,7 +13,9 @@ var listening = false;
 
 module.exports = ddbtest;
 module.exports.fixedName = function(test, tableName, tableDef) {
-  return ddbtest(test, tableName, tableDef);
+  var dynamo = ddbtest(test, tableName, tableDef);
+  dynamo.tableName = dynamo.tableDef.TableName = tableName;
+  return dynamo;
 };
 
 function ddbtest(test, projectName, tableDef, region) {
