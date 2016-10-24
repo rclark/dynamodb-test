@@ -25,6 +25,10 @@ dynamodb.delete();
 
 Configure the `dynamodb` object by providing your own `tape` object, an arbitrary name for your project, and the JSON object that defines the table's schema. Optionally, you may specify a region. If you do, tests will be run against a live DynamoDB table in that region. If you don't, tests will be run against a local instance of [dynalite](https://github.com/mhart/dynalite). If you specify a port, dynalite will listen on it, otherwise it will use 4567.
 
+** var dynamodb = require('dynamodb-test').fixedName(tape, tableName, tableDef)**
+
+To configure a dynalite test runner with a fixed table name. 
+
 **dynamodb.dynamo**
 
 An instance of [AWS.DynamoDB](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html) configured to query your test endpoint (live or dynalite).
