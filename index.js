@@ -11,7 +11,14 @@ var dynalite = require('dynalite')({
 
 var listening = false;
 
-module.exports = function(test, projectName, tableDef, region) {
+module.exports = ddbtest;
+module.exports.fixedName = function(test, tableName, tableDef) {
+  var dynamo = ddbtest(test, tableName, tableDef);
+  dynamo.tableName = dynamo.tableDef.TableName = tableName;
+  return dynamo;
+};
+
+function ddbtest(test, projectName, tableDef, region) {
   var live = !!region;
   tableDef = _(tableDef).clone();
 
@@ -217,4 +224,4 @@ module.exports = function(test, projectName, tableDef, region) {
   };
 
   return dynamodb;
-};
+}
