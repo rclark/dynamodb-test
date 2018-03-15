@@ -12,6 +12,7 @@ var dynalite = require('dynalite')({
 var listening = false;
 
 module.exports = ddbtest;
+module.exports.dynalite = dynalite;
 module.exports.fixedName = function(test, tableName, tableDef) {
   var dynamo = ddbtest(test, tableName, tableDef);
   dynamo.tableName = dynamo.tableDef.TableName = tableName;
@@ -33,7 +34,7 @@ function ddbtest(test, projectName, tableDef, region) {
     }, {});
   }
 
-  var dynamodb = {};
+  var dynamodb = {dynalite: dynalite};
 
   dynamodb.tableName = tableDef.TableName = [
     'test',
@@ -71,6 +72,7 @@ function ddbtest(test, projectName, tableDef, region) {
     dynalite.listen(4567, function(err) {
       if (err) throw err;
       listening = true;
+      test.onFinish(function(){ dynalite.close(); });
       dynamodb.dyno.createTable(tableDef, done);
     });
   }
