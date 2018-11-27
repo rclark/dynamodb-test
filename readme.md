@@ -2,6 +2,10 @@
 
 Create and destroy DynamoDB and Dynalite tables for use in [tape](https://github.com/substack/tape) tests
 
+# DEPRECATED
+
+:point_right: Please use https://github.com/mapbox/dynamodb-test
+
 ## Simple example
 
 ```js
