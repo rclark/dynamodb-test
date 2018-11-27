@@ -2,7 +2,7 @@ var crypto = require('crypto');
 var AWS = require('aws-sdk');
 var _ = require('underscore');
 var stream = require('stream');
-var Dyno = require('dyno');
+var Dyno = require('@mapbox/dyno');
 var dynalite = require('dynalite')({
   createTableMs: 0,
   updateTableMs: 0,

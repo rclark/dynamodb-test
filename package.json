@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/rclark/dynamodb-test",
   "dependencies": {
+    "@mapbox/dyno": "^1.4.1",
     "aws-sdk": "^2.3.14",
     "dynalite": "^1.0.2",
-    "dyno": "^1.0.1",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
